@@ -54,6 +54,7 @@ Sensor Data ➜ Microcontroller ➜ Server/Cloud ➜ AI Model ➜ Health Analysi
 # How To Run
 
   Step-1: Clone the Repository
+        - And Configure(code) the microprocesssor and sensors 
 
   Step-2: Open Arduino Code
 
@@ -65,3 +66,4 @@ Sensor Data ➜ Microcontroller ➜ Server/Cloud ➜ AI Model ➜ Health Analysi
   
   Step-3: Run AI Script (If applicable)
    -  Inside sever folder run (python app.py)
+
