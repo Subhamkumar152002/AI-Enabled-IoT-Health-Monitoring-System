@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Monitoring Dashboard</title>
+    <link rel="stylesheet" href="../../static/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        /* Custom Tailwind Config */
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3a86ff', /* Green theme */
+                        secondary: '#1E293B',
+                        accent: '#3b90ff', /* Lighter green */
+                        dark: '#0F172A',
+                        light: '#F8FAFC',
+                        grayText: '#94A3B8',
+                    },
+                },
+            },
+        };
+    </script>
+        <script type="module" src="./firebase.js"></script>
+</head>
+<body class="bg-dark text-light font-sans">
+    <div class="container">
+
+        <header>
+            <div class="logo">
+                <i class="fas fa-heartbeat"></i>
+                <h1>Health Monitor</h1>
+            </div>
+            <div class="user-controls">
+                <a href="/login" class="px-6 py-3 border border-primary text-light rounded-lg text-lg hover:bg-primary btn-hover transition">Login</a>
+                <a href="/signup" class="px-6 py-3 bg-primary text-light rounded-lg text-lg btn-hover transition">Sign Up</a>
+            </div>
+        </header>
+
+<script src="../../static/script.js"></script>

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Assessment Quiz</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <style>
+        .quiz-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 80vh;
+            text-align: center;
+        }
+
+        .quiz-question {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .quiz-options button {
+            padding: 10px 20px;
+            font-size: 1rem;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .quiz-options button:hover {
+            background-color: #45a049;
+        }
+
+        #result-container {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+</head>
+
+<body>
+    {% include 'components/loggednav.html' %}
+
+    <div class="quiz-container ">
+        <div class="quiz-question text-5xl relative -top-40" id="quiz-question">Loading question...</div>
+        <div class="quiz-options flex" id="quiz-options"></div>
+        <div class="text-white dashboard-grid grid grid-cols-3 gap-4 text-center text-white" id="result-container"
+            style=" flex-wrap: wrap; justify-content: space-between;">
+            <div id="message" class="text-white text-center"></div>
+            <a href="/dashboard" class="px-6 mx-auto py-3 bg-primary text-light rounded-lg text-lg btn-hover transition">Back to Dashboard</a>
+        </div>
+    </div>
+
+    <script>
+        const diseaseProbabilities = {
+            "Heart Issues": 0,
+            "Infection": 0,
+            "Thyroid Issues": 0,
+            "Anxiety": 0,
+            "Diabetes": 0
+        };
+
+        const primaryQuestions = [
+            { question: "Do you experience chest pain?", disease: "Heart Issues" },
+            { question: "Do you have persistent fever?", disease: "Infection" },
+            { question: "Do you have unusual fatigue or weight changes?", disease: "Thyroid Issues" },
+            { question: "Do you experience frequent anxiety or stress?", disease: "Anxiety" },
+            { question: "Do you have excessive thirst or hunger?", disease: "Diabetes" }
+        ];
+
+        const followUpQuestions = {
+            "Heart Issues": [
+                "Do you often wake up at night with shortness of breath?",
+                "Do you experience dizziness or fainting spells?",
+                "Do you feel chest pressure under stress?",
+                "Have you noticed swelling in your legs or feet?",
+                "Do you have a history of hypertension or high cholesterol?"
+            ],
+            "Infection": [
+                "Have you had a persistent cough or congestion for more than a week?",
+                "Have you been in contact with someone diagnosed with an infection?",
+                "Are you experiencing body aches and fatigue?",
+                "Do you have a weak immune system or asthma?",
+                "Have you taken medication, and did it help?"
+            ],
+            "Thyroid Issues": [
+                "Have you experienced sudden weight gain or loss?",
+                "Do you often feel too hot or too cold?",
+                "Do you suffer from extreme fatigue or mood swings?",
+                "Do you struggle with memory or concentration?",
+                "Have you been diagnosed with thyroid issues before?"
+            ],
+            "Anxiety": [
+                "Do you experience a racing heart, sweating, or trembling randomly?",
+                "Have you had panic attacks recently?",
+                "Do you have trouble sleeping due to overthinking?",
+                "Have you noticed increased irritability lately?",
+                "Do you get digestive issues when stressed?"
+            ],
+            "Diabetes": [
+                "Do you feel excessive thirst throughout the day?",
+                "Do you urinate frequently at night?",
+                "Do you experience sudden hunger pangs followed by dizziness?",
+                "Have you had unexplained weight loss or gain?",
+                "Does anyone in your family have diabetes?"
+            ]
+        };
+
+        let currentQuestionIndex = 0;
+        let followUpStage = false;
+        let currentDisease = null;
+        const quizQuestionElement = document.getElementById("quiz-question");
+        const quizOptionsElement = document.getElementById("quiz-options");
+        const resultContainer = document.getElementById("result-container");
+        const message = document.getElementById("message");
+
+        function loadQuestion() {
+            if (!followUpStage && currentQuestionIndex < primaryQuestions.length) {
+                const currentQuiz = primaryQuestions[currentQuestionIndex];
+                quizQuestionElement.textContent = currentQuiz.question;
+                quizOptionsElement.innerHTML = "";
+                ["Yes", "No"].forEach(option => {
+                    const button = document.createElement("button");
+                    button.textContent = option;
+                    button.onclick = () => handleAnswer(currentQuiz.disease, option);
+                    quizOptionsElement.appendChild(button);
+                });
+            } else if (followUpStage && currentDisease) {
+                displayFollowUpQuestions(currentDisease);
+            } else {
+                displayResult();
+            }
+        }
+
+        function handleAnswer(disease, answer) {
+            if (answer === "Yes") {
+                diseaseProbabilities[disease] += 20;
+                currentDisease = disease;
+            }
+            currentQuestionIndex++;
+            if (currentQuestionIndex >= primaryQuestions.length && currentDisease) {
+                followUpStage = true;
+            }
+            loadQuestion();
+        }
+
+        function displayFollowUpQuestions(disease) {
+            const questions = followUpQuestions[disease];
+            quizQuestionElement.textContent = questions[0];
+            quizOptionsElement.innerHTML = "";
+            let index = 0;
+            ["Yes", "No"].forEach(option => {
+                const button = document.createElement("button");
+                button.textContent = option;
+                button.onclick = () => {
+                    if (option === "Yes") {
+                        diseaseProbabilities[disease] += 15;
+                    }
+                    index++;
+                    if (index < questions.length) {
+                        quizQuestionElement.textContent = questions[index];
+                    } else {
+                        displayResult();
+                    }
+                };
+                quizOptionsElement.appendChild(button);
+            });
+        }
+
+        function displayResult() {
+            quizQuestionElement.style.display = "none";
+            quizOptionsElement.style.display = "none";
+            resultContainer.style.display = "flex";
+
+            let highestProbability = 0;
+            let probableDisease = "None";
+
+            for (const disease in diseaseProbabilities) {
+                if (diseaseProbabilities[disease] > highestProbability) {
+                    highestProbability = diseaseProbabilities[disease];
+                    probableDisease = disease;
+                }
+            }
+
+            message.innerHTML = `Based on your answers, you might currently have <strong>${probableDisease}</strong>, be at risk in the future, or have no risk.`;
+        }
+
+        loadQuestion();
+    </script>
+
+    
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="../static/script.js"></script>
+</body>
+
+</html>

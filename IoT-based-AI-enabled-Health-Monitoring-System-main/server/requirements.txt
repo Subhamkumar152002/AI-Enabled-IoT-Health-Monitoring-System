@@ -1,0 +1,10 @@
+flask                   # Web server for API and dashboard
+flask-socketio          # WebSockets for real-time updates
+paho-mqtt               # MQTT client for communication
+numpy                   # Numerical computations
+pandas                  # Data processing (for AI model training)
+scikit-learn            # Machine learning (AI model)
+              # Deep learning (if using neural networks)
+joblib                  # Model serialization (saving/loading model.pkl)
+matplotlib              # Visualization (optional for debugging)
+flask_session

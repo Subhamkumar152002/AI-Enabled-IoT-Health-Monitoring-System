@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Collection</title>
+    <link rel="stylesheet" href="/static/css/style.css"> <!-- Link to your existing CSS -->
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <style>
+        .data-collection-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 80vh;
+            text-align: center;
+        }
+
+        .data-collection-message {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .progress-bar-container {
+            width: 80%;
+            background-color: #f3f3f3;
+            border-radius: 25px;
+            overflow: hidden;
+            height: 20px;
+            margin-top: 20px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background-color: #4caf50;
+            transition: width 1s linear;
+        }
+    </style>
+</head>
+<body>
+    {% include 'components/loggednav.html' %}
+
+    <div class="data-collection-container">
+        <div class="data-collection-message text-white">
+            <i class="fas fa-spinner fa-spin"></i>
+            Keep wearing the device, we are collecting some data
+        </div>
+        <div class="progress-bar-container">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript to animate the progress bar for 1 minute
+        const progressBar = document.getElementById('progress-bar');
+        let progress = 0;
+        const duration = 10; // 60 seconds
+
+        const interval = setInterval(() => {
+            progress += 100 / duration; // Increment progress
+            progressBar.style.width = `${progress}%`;
+
+            if (progress >= 100) {
+            clearInterval(interval); // Stop the interval when progress reaches 100%
+            window.location.href = '/take-test'; // Redirect to /take-test
+            }
+        }, 1000); // Update every second
+    </script>
+</body>
+</html>
